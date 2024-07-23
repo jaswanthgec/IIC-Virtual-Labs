@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Animal Classification</title>
+    <style>
+        body {
+            font-family: Lucida Bright, sans-serif;
+            background-color: #E8B3A2;
+            margin: 0;  
+        }
+        .header {
+            text-align: center;
+            background-color: #CF9E7C;
+            color: #000;
+            padding: 10px;
+        }
+        .content {
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 60px;
+            color: #000;
+        }
+        h2 {
+            font-size: 50px;
+            color: #000;
+        }
+        h3 {
+            font-size: 30px;
+            color: #000;
+        }
+        p {
+            font-size: 20px;
+        }
+        .highlighted {
+            background-color: #f7bea1;
+            padding: 10px;
+        }
+        .highlighted2 {
+            background-color: #F0C08A;
+            padding: 10px;
+        }
+
+        .button-container {
+            background-color: #6D4234;
+            padding: 20px;
+        }
+        .button-container button {
+            background-color: #000;
+            color: #ffff00;
+            padding: 15px 15px; /* Adjusted padding */
+            margin: 0 0 1cm 0; /* 1cm bottom margin */
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 25px;
+        }
+        .button-container button:hover {
+            background-color: #CF9E7C;
+            color: #000;
+        }
+        .button-container p {
+            font-size: 25px;
+            color: #fefe33;
+            margin: 10px 0;
+        }
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* New styles for the content pages */
+        .content-page {
+            display: none;
+        }
+        .content-page img {
+            max-width: 100%;
+        }
+
+        /* Classic Button Style */
+        .quiz-container {
+            padding: 20px;
+            color: #000;
+        }
+
+        .classic-button {
+            background-color: #3498db;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background-color 0.3s ease;
+            
+        }
+
+        /* Innovative Button Style */
+        .innovative-button {
+            background-color: #f58216;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 0 0 1cm 0;
+            cursor: pointer;
+        }
+
+        .selected {
+            background-color: #5ffb01;
+        }
+
+        /* Hover style for classic buttons */
+        .classic-button:hover {
+            background-color: #abfe78;
+        }
+        .innovative-button:hover {
+            background-color: #FF5B00;
+        }
+
+        
+    </style>
+    <script>
+        // Define correct answers for each quiz
+        const correctAnswers = {
+            "herbivores": ["A", "B", "B"],
+            "omnivores": ["C", "C", "B"],
+            "carnivores": ["B", "B", "B"],
+            "main_quiz":["A", "B", "C", "A", "B"]
+        };
+
+        function showPage(pageClassName) {
+            // Hide all content pages
+            const contentPages = document.querySelectorAll(".content-page");
+            contentPages.forEach((page) => {
+                page.style.display = "none";
+            });
+
+            // Show the selected page
+            document.querySelector(`.${pageClassName}`).style.display = "block";
+        }
+
+        function showQuiz(quizName) {
+            // Hide all quiz containers
+            const quizContainers = document.querySelectorAll(".quiz-container");
+            quizContainers.forEach((container) => {
+                container.style.display = "none";
+            });
+
+            // Show the selected quiz container
+            document.getElementById(quizName + '-container').style.display = "block";
+        }
+
+        function selectAnswer(button, answer) {
+            // Deselect all other buttons in the same question
+            const questionDiv = button.parentNode;
+            const otherButtons = questionDiv.querySelectorAll("button");
+            otherButtons.forEach(function(otherButton) {
+                otherButton.classList.remove("selected");
+            });
+
+            // Toggle the "selected" class to indicate the selected answer
+            button.classList.toggle("selected");
+
+            // Store the selected answer in a data attribute
+            questionDiv.setAttribute("data-selected-answer", answer);
+        }
+
+        function calculateScore(quizName, selectedAnswers) {
+            // Calculate the score for the quiz
+            let score = 0;
+            for (let i = 0; i < selectedAnswers.length; i++) {
+                const questionDiv = selectedAnswers[i];
+                const selectedAnswer = questionDiv.getAttribute("data-selected-answer");
+                if (selectedAnswer === correctAnswers[quizName][i]) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function submitQuiz(quizName) {
+            // Get the selected answers for the questions in the quiz
+            const quizContainer = document.getElementById(quizName + '-container');
+            const selectedAnswers = quizContainer.querySelectorAll(".question[data-selected-answer]");
+
+            // Calculate the score for the quiz
+            const score = calculateScore(quizName, selectedAnswers);
+
+            // Display the score for the specified quiz
+            const resultContainer = quizContainer.querySelector(".result");
+            resultContainer.innerHTML = "Your Score: " + score + " out of " + selectedAnswers.length;
+        }
+    </script>
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <h1>Virtual Labs</h1>
+        </div><br>
+        <div class="highlighted">
+            <h2>Animal Classification based on food habits</h2>
+            <h3>Herbivores, Omnivores, and Carnivores!</h3>
+            <p>When learning about animals and their eating habits, you will definitely come to know that they can be classified into three categories, namely herbivores, carnivores, and omnivores. The term ‘herbivores’ is used to describe animals that eat only plants. Carnivores, on the other hand, eat only animals, and omnivores eat both plants and animals. In this article, you will be introduced to more than twenty herbivores. Furthermore, you can learn more about some of the most common herbivores you come across in everyday life.</p>
+        </div><br>
+        <div class="button-container">
+            <p>Content Preparation</p>
+            <button onclick="showPage('herbivores-page')">Herbivores</button>
+            <button onclick="showPage('omnivores-page')">Omnivores</button>
+            <button onclick="showPage('carnivores-page')">Carnivores</button><br>
+            <button onclick="showPage('')">Advanced Topics</button>
+            <p>Innovative Quiz</p>
+            <button class="innovative-button" onclick="showPage('innovative-quiz'); showQuiz('herbivores');">Herbivores Quiz</button>
+            <button class="innovative-button" onclick="showPage('innovative-quiz'); showQuiz('omnivores');">Omnivores Quiz</button>
+            <button class="innovative-button" onclick="showPage('innovative-quiz'); showQuiz('carnivores');">Carnivores Quiz</button><br>
+            <button class="innovative-button" onclick="showPage('innovative-quiz'); showQuiz('main_quiz');">Main Quiz</button>
+            <p>Click on the buttons to learn more about each category and take quizzes to test your knowledge!</p>            
+        </div>
+    </div>
+
+    <!-- Herbivores Page -->
+    <div class="content-page herbivores-page" style="display: none;">
+        <div class="header">
+            <h2>Herbivores</h2>
+        </div>
+        <div class="content">
+            <p>Herbivores are animals that primarily consume plants and vegetation. They have adapted to eat various types of plant material, including leaves, stems, roots, and fruits. Some herbivores have specialized digestive systems that help them break down tough plant fibers.</p>
+            <p>Examples of herbivores include cows, deer, rabbits, and many species of insects. These animals play a crucial role in ecosystems by helping control plant populations and serving as food for carnivores and omnivores.</p>
+            <img src="pic1.jpg" alt="Herbivores">
+            <br> <br> <br>
+            <img src="pic7.jpg" alt="Carnivores">
+            <br> <br> <br>
+            <img src="tab1.png" alt="Herbivores">
+            <br> <br> <br>
+            <h3>Frequently Asked Questions on the Names of Herbivorous Animals: </h3>
+            <div style="text-align: left;">
+                <p>
+                    <b>Q1
+                What are herbivorous animals?</b><br>
+                Animals who consume only plant parts as a part of their diet are called herbivores.<br><br>
+                
+                <b>Q2
+                Name some domesticated animals that are herbivores.</b><br>
+                Horse, cow, mule, donkey and buffalo are some domesticated animals that are herbivores.<br><br>
+                
+                <b>Q3
+                Name some herbivorous animals starting with the letter ‘B’.</b><br>
+                Buffalo, bison, beaver and bull are names of some herbivore animals starting with the letter ‘B’.<br>
+                </p>                  
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Omnivores Page -->
+    <div class="content-page omnivores-page" style="display: none;">
+        <div class="header">
+            <h2>Omnivores</h2>
+        </div>
+        <div class="content">
+            <!-- Content specific to Omnivores goes here... -->
+            <p>Omnivores are animals that have a diet consisting of both plant and animal matter. They are opportunistic feeders and can adapt to various food sources depending on their environment and availability.</p>
+            <p>Examples of omnivores include humans, bears, raccoons, and certain species of birds. Their ability to consume a wide range of foods allows them to thrive in diverse ecosystems.</p>
+            <img src="pic3.jpg" alt="Omnivores">
+            <br> <br> <br>
+            <img src="pic8.jpg" alt="Carnivores">
+            <br> <br> <br>
+            <img src="tab3.png" alt="Omnivores">
+            <br> <br> <br>
+            <h3>Frequently Asked Questions on the Names of Omnivorous Animals: </h3>
+            <div style="text-align: left;">
+                <p>
+                    <b>Q1
+                        What are omnivorous animals?</b><br>
+                        Animals that consume both plant and animal parts are called omnivorous animals.<br><br>
+                
+                <b>Q2
+                    Are human beings omnivorous animals?</b><br>
+                    Yes, human beings are omnivorous animals as they consume both plant and animal products for their survival.<br><br>
+                
+                <b>Q3
+                    Name two omnivorous animals starting with the letter ‘B’.</b><br>
+                    Bear and beaver are two omnivorous animals starting with the letter ‘B’.<br>
+                </p>                  
+            </div>
+        </div>
+    </div>
+
+    <!-- Carnivores Page -->
+    <div class="content-page carnivores-page" style="display: none;">
+        <div class="header">
+            <h2>Carnivores</h2>
+        </div>
+        <div class="content">
+            <!-- Content specific to Carnivores goes here... -->
+            <p>Carnivores are animals that primarily feed on other animals. They have adapted to hunting and capturing prey as their primary source of food. Carnivores often have sharp teeth and claws for catching and eating other animals.</p>
+            <p>Examples of carnivores include lions, tigers, wolves, and hawks. They play a crucial role in controlling prey populations and maintaining the balance of ecosystems.</p>
+            <img src="pic6.jpg" alt="Carnivores">
+            <br> <br> <br>
+            <img src="tab4.png" alt="Carnivores">
+            <br> <br> <br>
+            <h3>Frequently Asked Questions on the Names of Omnivorous Animals: </h3>
+            <div style="text-align: left;">
+                <p>
+                    <b>Q1
+                        How are herbivores different from carnivorous animals?</b><br>
+                        Herbivores are animals that feed only on plants or plant products. For eg., cows, goats buffaloes, etc. Carnivorous animals, on the other hand, feed on other animals for nutrition. Lions, tigers, and leopards are carnivorous animals.<br><br>
+                
+                <b>Q2
+                    What do carnivorous animals eat?</b><br>
+                    Carnivorous animals are meat-eaters. They feed on animal flesh by hunting their prey. For example, a large carnivore can prey on a deer, a medium-sized carnivore might prey on rodents, insects, frogs while a small-sized carnivore may feed on worms.<br><br>
+                
+                <b>Q3
+                    Are amoebae classified as carnivores or herbivores?</b><br>
+                    Amoebae are classified neither as carnivores nor herbivores. They are classified as omnivores. This is because amoeba feeds on a variety of food sources such as microorganisms and plants.<br><br>
+                
+                <b>Q4
+                    Why are humans classified as omnivores?</b><br>
+                    Humans are classified as omnivores. Omnivores are organisms that feed on different types of food of plant and animal origin. Humans consume different varieties of plant and animal food products and are hence considered omnivores.<br><br>
+
+                <b>Q5
+                    What are the distinguishing features of carnivorous animals that help them to feed on other animals?</b><br>
+                    The carnivorous animals are provided with powerful jaws and extremely sharp teeth to kill their prey and tear the flesh apart. They have strong claws that help them to capture their prey.<br>
+
+                </p>                  
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Innovative Quiz Content -->
+    <div class="content-page innovative-quiz">
+        <div class="highlighted2">
+            <div id="herbivores-container" class="quiz-container">
+                <div class="header">
+                    <h2>Herbivores Quiz</h2>
+                </div>
+                <div class="content">
+                    <p>Take this quiz to test your knowledge of Herbivores!</p>
+                    <p>Choose the correct option for each question:</p>
+                </div>
+                
+                <div class="question">
+                    <p><strong>Question 1:</strong> What do herbivores primarily eat?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Meat</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Plants</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Both meat and plants</button>
+                </div>
+                <div class="question">
+                    <p><strong>Question 2:</strong> Which of the following is a herbivorous animal?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Lion</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Giraffe</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Wolf</button>
+                </div>
+                <div class="question">
+                    <p><strong>Question 3:</strong> What is the primary source of nutrition for herbivorous animals?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Insects</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Plants</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Fish</button>
+                </div><br><br>
+                <button class="innovative-button" onclick="submitQuiz('herbivores')">Submit Quiz</button>
+                <p class="result"></p>
+            </div>
+    
+            <div id="omnivores-container" class="quiz-container">
+                <div class="header">
+                    <h2>Omnivores Quiz</h2>
+                </div>
+                <div class="content">
+                    <p>Take this quiz to test your knowledge of Omnivores!</p>
+                    <p>Choose the correct option for each question:</p>
+                </div>
+                <div class="question">
+                    <p><strong>Question 1:</strong> What do omnivores typically eat?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Plants</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Meat</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Only fruits</button>
+                </div>
+                <div class="question">
+                    <p><strong>Question 2:</strong> Which of the following animals is an omnivore?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Panda</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Hawk</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Bear</button>
+                </div>
+                <div class="question">
+                    <p><strong>Question 3:</strong> What is an example of a human food that is considered omnivorous?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Carrots</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Tofu</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Pizza</button>
+                </div><br><br>
+                <button class="innovative-button" onclick="submitQuiz('omnivores')">Submit Quiz</button>
+                <p class="result"></p>
+            </div>
+    
+            <div id="carnivores-container" class="quiz-container">
+                <div class="header">
+                    <h2>Carnivores Quiz</h2>
+                </div>
+                <div class="content">
+                    <p>Take this quiz to test your knowledge of Carnivores!</p>
+                    <p>Choose the correct option for each question:</p>
+                </div>
+                <div class="question">
+                    <p><strong>Question 1:</strong> What is the primary diet of carnivores?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Plants</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Meat</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Nuts and seeds</button>
+                </div>
+                <div class="question">
+                    <p><strong>Question 2:</strong> Which of the following animals is a carnivore?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Rabbit</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Tiger</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Gorilla</button>
+                </div>
+                <div class="question">
+                    <p><strong>Question 3:</strong> What do lions primarily hunt for food?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Fish</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Antelopes</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Berries</button>
+                </div><br><br>
+                <button class="innovative-button" onclick="submitQuiz('carnivores')">Submit Quiz</button>
+                <p class="result"></p>
+            </div>
+    
+            <div id="main_quiz-container" class="quiz-container">
+                <div class="header">
+                    <h2>main_quiz Quiz</h2>
+                </div>
+                <div class="content">
+                    <p>Take this quiz to test your knowledge of main_quiz!</p>
+                    <p>Choose the correct option for each question:</p>
+                </div>
+                
+                <div class="question">
+                    <br> <br>
+                    <img style= "max-width:50%", height: auto, src="q1.png" alt="Carnivores">
+                    <br> <br>
+                    <p><strong>Question 1:</strong> What do you notice in the above picture?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Cow</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Zebra</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Goat</button>
+                </div>
+                <div class="question">
+                    <br> <br>
+                    <img style= "max-width:50%", height: auto, src="q2.png" alt="Image not Visible">
+                    <br> <br>                    
+                    <p><strong>Question 2:</strong> What do you notice in the above picture?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Lion</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Tiger</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Horse</button>
+                </div>
+                <div class="question">
+                    <br> <br>
+                    <img style= "max-width:50%", height: auto, src="q3.png" alt="Image not Visible">
+                    <br> <br>
+                    <p><strong>Question 3:</strong> What do you notice in the above picture?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Herbivores</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. Omnivores</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Carnivores</button>
+                </div>
+                
+                <div class="question">
+                    <br> <br>
+                    <img style= "max-width:50%", height: auto, src="q4.png" alt="Image not Visible">
+                    <br> <br>
+                    <p><strong>Question 4:</strong> What do you notice in the above picture?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. National Bird</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. National Animal</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. Don't Know</button>
+                </div>
+                <div class="question">
+                    <br> <br>
+                    <img style= "max-width:50%", height: auto, src="q5.png" alt="Image not Visible">
+                    <br> <br>
+                    <p><strong>Question 5:</strong> What do you notice in the above picture?</p>
+                    <button class="classic-button" onclick="selectAnswer(this, 'A')">A. Very Harmful & Dangerous</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'B')">B. good pets</button>
+                    <button class="classic-button" onclick="selectAnswer(this, 'C')">C. seen in Oceans</button>
+                </div><br><br>
+                <button class="innovative-button" onclick="submitQuiz('main_quiz')">Submit Quiz</button>
+                <p class="result"></p>
+            </div>
+
+        </div>
+        
+        <!-- Similar content for adding the questions in individual div tags -->
+
+    </div>
+
+</body>
+</html>
